@@ -6,10 +6,5 @@ const typeOf = obj =>
         .split(" ")[1]
         .slice(0, this.length - 1)
 
-const isIterable = obj => {
-    if (obj === undefined) {
-        return false;
-    }
-
-    return typeOf(obj[Symbol.iterator]) === "Function";
-}
+const isIterable = obj =>
+    obj ? typeOf(obj[Symbol.iterator]) === "Function" : false
