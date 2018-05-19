@@ -1,0 +1,19 @@
+{
+  "name": "crunch",
+  "version": "1.0.0",
+  "description": "A library for anaylizing data sets",
+  "main": "crunch.js",
+  "scripts": {
+    "test": "mocha --exit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryandabler/crunch.git"
+  },
+  "author": "Ryan Dabler <r.p.dabler@gmail.com> (https://ryandabler.github.io)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryandabler/crunch/issues"
+  },
+  "homepage": "https://github.com/ryandabler/crunch"
+}
