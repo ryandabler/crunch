@@ -19,9 +19,13 @@ class Crunch {
 
     [Symbol.iterator]() {
         let i = 0;
+        const _this = this;
+
         return {
             next() {
-                return this[i] ? { done: false, value: this[i] } : { done: true }
+                return _this[i]
+                    ? { done: false, value: _this[i++] }
+                    : { done: true };
             }
         }
     }
