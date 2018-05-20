@@ -31,5 +31,22 @@ class Crunch {
     }
 }
 
+Crunch.uniformDist = (begin = -1, end = 1) => {
+    return (end - begin) * Math.random() + begin;
+}
+
+Crunch.normalDist = (mean, std) => {
+    let s = 0;
+    let u, v;
+
+    while (s === 0 || s >= 1) {
+        [ u, v ] = [ Crunch.uniformDist(), Crunch.uniformDist() ];
+        s = u ** 2 + v ** 2;
+    }
+
+    const [ z0, z1 ] = [ u * Math.sqrt(-2 * Math.log(s) / s), null ];
+    return z0 * std + mean;
+}
+
 const crunch = data => 
     isIterable(data) ? new Crunch(data) : new Crunch([])
