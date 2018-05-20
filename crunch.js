@@ -40,6 +40,15 @@ class Crunch {
             }
         }
     }
+
+    data() {
+        const retObj = [];
+        for (const elem of this) {
+            retObj.push("$data" in elem ? elem.$data : elem)
+        }
+        
+        return retObj;
+    }
 }
 
 Crunch.uniformDist = (begin = -1, end = 1) => {
