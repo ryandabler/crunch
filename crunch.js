@@ -17,7 +17,7 @@ const objectify = iterable => {
         );
     }
 
-    return returnObject;
+    return retObj;
 }
 
 ////////////////////
