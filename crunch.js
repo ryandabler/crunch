@@ -9,6 +9,17 @@ const typeOf = obj =>
 const isIterable = obj =>
     obj ? typeOf(obj[Symbol.iterator]) === "Function" : false
 
+const objectify = iterable => {
+    const retObj = []
+    for (let elem of iterable) {
+        retObj.push(
+            typeOf(elem) !== "Object" ? { $data: elem } : elem
+        );
+    }
+
+    return returnObject;
+}
+
 ////////////////////
 // Main
 ////////////////////
@@ -49,4 +60,4 @@ Crunch.normalDist = (mean, std) => {
 }
 
 const crunch = data => 
-    isIterable(data) ? new Crunch(data) : new Crunch([])
+    isIterable(data) ? new Crunch(objectify(data)) : new Crunch([])
