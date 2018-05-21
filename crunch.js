@@ -62,6 +62,16 @@ class Crunch {
         
         return retObj;
     }
+
+    slice({ begin = 0, end = this.length } = {}) {
+        const retObj = [];
+        
+        for (let i = begin; i < end; i++) {
+            retObj.push(this[i]);
+        }
+
+        return crunch(retObj);
+    }
 }
 
 Crunch.uniformDist = (begin = -1, end = 1) => {
