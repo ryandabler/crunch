@@ -26,6 +26,7 @@ const objectify = iterable => {
 class Crunch {
     constructor(data) {
         data.forEach((item, idx) => this[idx] = item);
+        this.length = [ ...data ].length;
     }
 
     [Symbol.iterator]() {
