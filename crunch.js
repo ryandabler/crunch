@@ -91,5 +91,9 @@ Crunch.normalDist = (mean, std) => {
     return z0 * std + mean;
 }
 
+Crunch.round = (number, places) => {
+    return Math.round(number * 10 ** places) / 10 ** places;
+}
+
 const crunch = data => 
     isIterable(data) ? new Crunch(objectify(data)) : new Crunch([])
