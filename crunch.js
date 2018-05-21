@@ -20,6 +20,18 @@ const objectify = iterable => {
     return retObj;
 }
 
+const resolvePathAndGet = (obj, path) => {
+    const segments = path.split(".");
+	let pointer = obj;
+	
+	while (typeOf(pointer) === "Object" && segments.length > 0) {
+		const segment = segments.shift();
+		pointer = pointer[segment];
+    }
+	
+    return pointer;
+}
+
 ////////////////////
 // Main
 ////////////////////
