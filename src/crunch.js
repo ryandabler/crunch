@@ -45,7 +45,8 @@ const aggregations = {
     sum(group, path) {
         let reducedValue = 0;
         group.forEach(item => {
-            reducedValue += resolvePathAndGet(item, path);
+            reducedValue += path.map(_path => resolvePathAndGet(item, _path))
+                .reduce((accum, val) => accum + val);
         });
 
         return reducedValue;
