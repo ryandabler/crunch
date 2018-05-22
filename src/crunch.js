@@ -109,12 +109,8 @@ class Crunch {
 		}
 
         return Array.from(groups).map(_group => {
-            const consolidatedObj = {};
             const group = _group[1];
-            
-            groupBy.forEach(condition => {
-                consolidatedObj[condition.name] = resolvePathAndGet(group[0], condition.path);
-            });
+            const consolidatedObj = consolidateObj(group, groupBy);
 
             calculations.forEach(calculation => {
                 const { name, operation, path } = calculation
