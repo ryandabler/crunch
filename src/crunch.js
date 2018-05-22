@@ -96,9 +96,10 @@ class Crunch {
                 : groups.set(hashedValues, [ fodderItem ]);
 		}
 
-        return groups.map(group => {
+        return Array.from(groups).map(_group => {
             const consolidatedObj = {};
-
+            const group = _group[1];
+            
             groupBy.forEach(condition => {
                 consolidatedObj[condition.name] = resolvePathAndGet(group[0], condition.path);
             });
