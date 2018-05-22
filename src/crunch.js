@@ -39,7 +39,8 @@ const resolvePathAndGet = (obj, path) => {
     return pointer;
 }
 
-// const generateRange
+const hashContents = arr => arr.map(elem => elem).join("")
+
 ////////////////////
 // Main
 ////////////////////
