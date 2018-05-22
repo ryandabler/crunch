@@ -117,17 +117,8 @@ class Crunch {
             });
 
             calculations.forEach(calculation => {
-                let reducedValue;
-
-                if (calculation.operation === "sum") {
-                    reducedValue = 0;
-
-                    group.forEach(item => {
-                        reducedValue += resolvePathAndGet(item, calculation.path);
-                    });
-                }
-
-                consolidatedObj[calculation.name] = reducedValue;
+                const { name, operation, path } = calculation
+                consolidatedObj[name] = aggregations[operation](group, path);
             });
 
             return consolidatedObj;
