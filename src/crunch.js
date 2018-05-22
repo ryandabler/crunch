@@ -41,6 +41,17 @@ const resolvePathAndGet = (obj, path) => {
 
 const hashContents = arr => arr.map(elem => elem).join("")
 
+const aggregations = {
+    sum(group, path) {
+        let reducedValue = 0;
+        group.forEach(item => {
+            reducedValue += resolvePathAndGet(item, path);
+        });
+
+        return reducedValue;
+    }
+}
+
 ////////////////////
 // Main
 ////////////////////
