@@ -130,7 +130,7 @@ class Crunch {
             });
 
             return consolidatedObj;
-        })
+        });
     }
 
     aggregate({ pipeline = [] } = {}) {
