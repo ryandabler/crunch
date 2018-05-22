@@ -2,7 +2,7 @@
   "name": "crunch",
   "version": "1.0.0",
   "description": "A library for anaylizing data sets",
-  "main": "crunch.js",
+  "main": "src/crunch.js",
   "scripts": {
     "test": "mocha --exit"
   },
