@@ -110,8 +110,8 @@ class Crunch {
                 if (calculation.operation === "sum") {
                     reducedValue = 0;
 
-                    group.forEach(_group => {
-                        reducedValue += resolvePathAndGet(_group, calculation.path);
+                    group.forEach(item => {
+                        reducedValue += resolvePathAndGet(item, calculation.path);
                     });
                 }
 
