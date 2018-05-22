@@ -72,6 +72,63 @@ class Crunch {
 
         return crunch(retObj);
     }
+
+    group({ groupBy = [], calculations = [] } = {}) {
+        const groups = [];
+        let fodder = [ ...this ];
+
+        while (fodder.length > 0) {
+            const firstMatch = fodder.shift();
+
+            // Assemble list of values to match
+            const valuesToMatch = {};
+            groupBy.forEach(condition => {
+                valuesToMatch[condition.path] = resolvePathAndGet(firstMatch, condition.path);
+            });
+
+            // Find matching elements
+            const matches = fodder.filter(item => {
+                let _matches = true;
+                for (const path in valuesToMatch) {
+                    _matches = _matches && resolvePathAndGet(item, path) === valuesToMatch[path];
+                }
+
+                return _matches;
+            });
+
+            const group = [ firstMatch, ...matches ];
+            groups.push(group);
+
+            // Remove elements from list
+            fodder = fodder.filter(item => {
+                return !matches.includes(item);
+            });
+        }
+
+        return groups.map(group => {
+            const consolidatedObj = {};
+
+            groupBy.forEach(condition => {
+                consolidatedObj[condition.name] = resolvePathAndGet(group[0], condition.path);
+            });
+
+            calculations.forEach(calculation => {
+                let reducedValue;
+
+                if (calculation.operation === "sum") {
+                    reducedValue = 0;
+
+                    group.forEach(_group => {
+                        reducedValue += resolvePathAndGet(_group, calculation.path);
+                    });
+                }
+
+                consolidatedObj[calculation.name] = reducedValue;
+            });
+
+            return consolidatedObj;
+        })
+    }
 }
 
 Crunch.uniformDist = (begin = -1, end = 1) => {
