@@ -95,5 +95,14 @@ Crunch.round = (number, places) => {
     return Math.round(number * 10 ** places) / 10 ** places;
 }
 
+Crunch.isPrime = number => {
+    const upperLimit = Math.ceil(Math.sqrt(number));
+    for (let n = 2; n <= upperLimit; n++) {
+        if (number % n === 0) return false;
+    }
+
+    return true;
+}
+
 const crunch = data => 
     isIterable(data) ? new Crunch(objectify(data)) : new Crunch([])
