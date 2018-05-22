@@ -83,36 +83,18 @@ class Crunch {
     }
 
     group({ groupBy = [], calculations = [] } = {}) {
-        const groups = [];
+        const groups = new Map();
         let fodder = [ ...this ];
 
-        while (fodder.length > 0) {
-            const firstMatch = fodder.shift();
-
-            // Assemble list of values to match
-            const valuesToMatch = {};
-            groupBy.forEach(condition => {
-                valuesToMatch[condition.path] = resolvePathAndGet(firstMatch, condition.path);
-            });
-
-            // Find matching elements
-            const matches = fodder.filter(item => {
-                let _matches = true;
-                for (const path in valuesToMatch) {
-                    _matches = _matches && resolvePathAndGet(item, path) === valuesToMatch[path];
-                }
-
-                return _matches;
-            });
-
-            const group = [ firstMatch, ...matches ];
-            groups.push(group);
-
-            // Remove elements from list
-            fodder = fodder.filter(item => {
-                return !matches.includes(item);
-            });
-        }
+        for (fodderItem of fodder) {
+            const valuesToMatch = groupBy.map(condition =>
+                resolvePathAndGet(fodderItem, condition.path)
+            );
+			const hashedValues = hashContents(valuesToMatch);
+            groups.has(hashedValues)
+                ? groups.set(hashedValues, [ ...groups.get(hashedValues), fodderItem ])
+                : groups.set(hashedValues, [ fodderItem ]);
+		}
 
         return groups.map(group => {
             const consolidatedObj = {};
