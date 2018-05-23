@@ -151,6 +151,26 @@ const aggregations = {
         });
 
         return reducedValue;
+    },
+
+    $avg(group, param) {
+        let reducedValue;
+        let counter = 0;
+        group.forEach(item => {
+            if (typeOf(param) === "Number") {
+                reducedValue = param;
+                counter++;
+            } else if (typeOf(param) === "Array") {
+                reducedValue = param.map(_path => resolvePathAndGet(item, _path))
+                    .reduce((accum, val) => accum + val);
+                counter = param.length;
+            } else if (typeOf(param) === "Object") {
+                reducedValue += aggregations[param.operation](group, param.param);
+                counter = group.length;
+            }
+        });
+
+        return reducedValue / counter;
     }
 }
 
