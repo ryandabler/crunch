@@ -100,9 +100,7 @@ const siftObject = obj => {
         const [ key, val ] = entry;
         
         if (aggregations.isFunctional(key)) {
-            calculations.push(
-                { name: key.split(".")[0], path: val, operation: key.split(".").slice(1) }
-            );
+            calculations.push( generateCalculation(key, val) );
         } else {
             groupBy.push({ name: key, path: val });
         }
