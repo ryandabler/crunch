@@ -137,7 +137,7 @@ const aggregations = {
             );
     },
 
-    sum(group, path) {
+    $sum(group, param) {
         let reducedValue = 0;
         group.forEach(item => {
             if (typeOf(path) === "Number") {
