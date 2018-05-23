@@ -242,67 +242,7 @@ class Crunch {
             return consolidatedObj;
         });
     }
-
-    aggregate({ pipeline = [] } = {}) {
-        let retObj = {};
-
-        pipeline.forEach(stage => {
-            if (Object.keys(stage)[0] === "$group") {
-                const fieldsArr = Object.keys(stage.$group);
-
-                fieldsArr.forEach(field => {
-                    const action = Object.keys(stage.$group[field]);
-                    if (action === "$sum") {
-                        // retObj[field] = 
-                    }
-                })
-            }
-        })
-    }
-
-    movingAverage({ chunk, type, field = "$data" } = {}) {
-        if (![ MV_AVG_CENTER, MV_AVG_LEAD, MV_AVG_TRAIL ].includes(type)) {
-            return this;
         }
-
-        const retObj = [];
-        let begin, end;
-
-        if (type === MV_AVG_CENTER) {
-            begin = Math.floor(chunk / 2);
-            end = this.length - begin - (chunk % 2 === 0 ? 0 : 1);
-            console.log(begin, end);
-        } else if (type === MV_AVG_LEAD) {
-            begin = 0;
-            end = this.length - chunk;
-        } else {
-            begin = chunk - 1;
-            end = this.length - 1
-        }
-
-        for (let n = 0; n < this.length; n++) {
-            if (n < begin || n > end) {
-                retObj.push(null);
-                continue;
-            }
-
-            const range = {};
-            if (type === MV_AVG_CENTER) {
-                range.begin = n - Math.floor(chunk / 2);
-                range.end = n + Math.floor(chunk / 2) - (chunk % 2 === 0 ? 1 : 0) + 1;
-            } else if (type === MV_AVG_LEAD) {
-                range.begin = n;
-                range.end = n + chunk - 1 + 1;
-            } else {
-                range.begin = n - chunk + 1
-                range.end = n + 1;
-            }
-
-            console.log(this.slice(range));
-        }
-
-    }
-}
 
 Crunch.uniformDist = (begin = -1, end = 1) => {
     return (end - begin) * Math.random() + begin;
