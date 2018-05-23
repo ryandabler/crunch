@@ -154,7 +154,7 @@ const aggregations = {
     },
 
     $avg(group, param) {
-        let reducedValue;
+        let reducedValue = 0;
         let counter = 0;
         group.forEach(item => {
             if (typeOf(param) === "Number") {
