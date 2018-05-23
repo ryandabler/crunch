@@ -220,7 +220,7 @@ class Crunch {
         let fodder = [ ...this ];
         const { groupBy, calculations } = siftObject(obj);
         
-        for (fodderItem of fodder) {
+        for (const fodderItem of fodder) {
             const valuesToMatch = groupBy.map(condition =>
                 resolvePathAndGet(fodderItem, condition.path)
             );
