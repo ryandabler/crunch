@@ -235,8 +235,8 @@ class Crunch {
             const consolidatedObj = consolidateObj(group, groupBy);
 
             calculations.forEach(calculation => {
-                const { name, operation, path } = calculation
-                consolidatedObj[name] = aggregations[operation](group, path);
+                const { name, operation, param } = calculation
+                consolidatedObj[name] = aggregations[operation](group, param);
             });
 
             return consolidatedObj;
