@@ -247,17 +247,19 @@ class Crunch {
                 : groups.set(hashedValues, [ fodderItem ]);
 		}
 
-        return Array.from(groups).map(_group => {
-            const group = _group[1];
-            const consolidatedObj = consolidateObj(group, groupBy);
+        return crunch(
+            Array.from(groups).map(_group => {
+                const group = _group[1];
+                const consolidatedObj = consolidateObj(group, groupBy);
 
-            calculations.forEach(calculation => {
-                const { name, operation, param } = calculation
-                consolidatedObj[name] = aggregations[operation](group, param);
-            });
+                calculations.forEach(calculation => {
+                    const { name, operation, param } = calculation
+                    consolidatedObj[name] = aggregations[operation](group, param);
+                });
 
-            return consolidatedObj;
-        });
+                return consolidatedObj;
+            })
+        );
     }
         }
 
