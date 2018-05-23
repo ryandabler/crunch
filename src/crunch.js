@@ -27,6 +27,16 @@ const objectify = iterable => {
     return retObj;
 }
 
+const consolidateObj = (group, groupBy) => {
+    const retObj = {}
+
+    groupBy.forEach(condition => {
+        retObj[condition.name] = resolvePathAndGet(group[0], condition.path);
+    });
+
+    return retObj;
+}
+
 const resolvePathAndGet = (obj, path) => {
     const segments = path.split(".");
 	let pointer = obj;
