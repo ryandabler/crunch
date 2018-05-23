@@ -140,11 +140,13 @@ const aggregations = {
     $sum(group, param) {
         let reducedValue = 0;
         group.forEach(item => {
-            if (typeOf(path) === "Number") {
-                reducedValue += path;
-            } else {
-                reducedValue += path.map(_path => resolvePathAndGet(item, _path))
+            if (typeOf(param) === "Number") {
+                reducedValue += param;
+            } else if (typeOf(param) === "Array") {
+                reducedValue += param.map(_path => resolvePathAndGet(item, _path))
                     .reduce((accum, val) => accum + val);
+            } else if (typeOf(param) === "Object") {
+                reducedValue += aggregations[param.operation]([ item ], param.param);
             }
         });
 
