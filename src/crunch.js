@@ -12,13 +12,13 @@ const typeOf = obj =>
         .slice(0, -1)
 
 const isIterable = obj =>
-    obj ? typeOf(obj[Symbol.iterator]) === "Function" : false
+    obj ? typeOf(obj[Symbol.iterator]) === constants.TYPE_FUNCTION : false
 
 const objectify = iterable => {
     const retObj = []
     for (let elem of iterable) {
         retObj.push(
-            typeOf(elem) !== "Object" ? { $data: elem } : elem
+            typeOf(elem) !== constants.TYPE_OBJECT ? { $data: elem } : elem
         );
     }
 
@@ -44,7 +44,7 @@ const resolvePathAndGet = (obj, path) => {
     const segments = path.split(".");
 	let pointer = obj;
 	
-	while (typeOf(pointer) === "Object" && segments.length > 0) {
+	while (typeOf(pointer) === constants.TYPE_OBJECT && segments.length > 0) {
 		const segment = segments.shift();
 		pointer = pointer[segment];
     }
@@ -134,7 +134,7 @@ const destructure = (obj, path = null) => {
     entries.forEach(entry => {
         const [ key, val ] = entry;
         const currentPath = path ? path + "." + key : key;
-        const subEntries = typeOf(val) === "Object" ? destructure(val, currentPath) : null;
+        const subEntries = typeOf(val) === constants.TYPE_OBJECT ? destructure(val, currentPath) : null;
         retObj = subEntries ? { ...retObj, ...subEntries } : { ...retObj, [currentPath]: val };
     });
 
@@ -155,12 +155,12 @@ const aggregations = {
     $sum(group, param) {
         let reducedValue = 0;
         group.forEach(item => {
-            if (typeOf(param) === "Number") {
+            if (typeOf(param) === constants.TYPE_NUMBER) {
                 reducedValue += param;
-            } else if (typeOf(param) === "Array") {
+            } else if (typeOf(param) === constants.TYPE_ARRAY) {
                 reducedValue += param.map(_path => resolvePathAndGet(item, _path))
                     .reduce((accum, val) => accum + val);
-            } else if (typeOf(param) === "Object") {
+            } else if (typeOf(param) === constants.TYPE_OBJECT) {
                 reducedValue += aggregations[param.operation]([ item ], param.param);
             }
         });
@@ -172,14 +172,14 @@ const aggregations = {
         let reducedValue = 0;
         let counter = 0;
         group.forEach(item => {
-            if (typeOf(param) === "Number") {
+            if (typeOf(param) === constants.TYPE_NUMBER) {
                 reducedValue = param;
                 counter++;
-            } else if (typeOf(param) === "Array") {
+            } else if (typeOf(param) === constants.TYPE_ARRAY) {
                 reducedValue = param.map(_path => resolvePathAndGet(item, _path))
                     .reduce((accum, val) => accum + val);
                 counter = param.length;
-            } else if (typeOf(param) === "Object") {
+            } else if (typeOf(param) === constants.TYPE_OBJECT) {
                 reducedValue += aggregations[param.operation]([ item ], param.param);
                 counter = group.length;
             }
