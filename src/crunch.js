@@ -165,7 +165,7 @@ const aggregations = {
                     .reduce((accum, val) => accum + val);
                 counter = param.length;
             } else if (typeOf(param) === "Object") {
-                reducedValue += aggregations[param.operation](group, param.param);
+                reducedValue += aggregations[param.operation]([ item ], param.param);
                 counter = group.length;
             }
         });
