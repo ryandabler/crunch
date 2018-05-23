@@ -88,6 +88,7 @@ const generateCalculation = (key, val, call = 1) => {
             : generateCalculation(key.split(".").slice(2).join("."), val, call + 1)
     };
 
+    if (param.param.operation === "") param.param = param.param.param;
     return param;
 }
 
