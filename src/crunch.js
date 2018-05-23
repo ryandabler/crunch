@@ -61,6 +61,36 @@ const resolvePathAndSet = (val, path) => {
     return retObj;
 }
 
+const generateCalculation = (key, val, call = 1) => {
+    let name = "";
+    let operation;
+    
+    if (call === 1) {
+        key.split(".").forEach(path => {
+            name += path.charAt(0) === "$" ? "" : path;
+            operation = path.charAt(0) === "$" && operation === undefined
+                ? path
+                : operation;
+        });
+    } else {
+        operation = key.split(".")[0];
+    }
+
+    const tail = key.split(".").filter(path =>
+        !name.split(".").includes(path) && path !== operation
+    );
+    
+    const param = {
+        name,
+        operation,
+        param: key === ""
+            ? val
+            : generateCalculation(key.split(".").slice(2).join("."), val, call + 1)
+    };
+
+    return param;
+}
+
 const siftObject = obj => {
     const flatObj = destructure(obj);
     const groupBy = [];
