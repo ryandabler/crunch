@@ -215,10 +215,11 @@ class Crunch {
         return crunch(retObj);
     }
 
-    group({ groupBy = [], calculations = [] } = {}) {
+    group(obj = {}) {
         const groups = new Map();
         let fodder = [ ...this ];
-
+        const { groupBy, calculations } = siftObject(obj);
+        
         for (fodderItem of fodder) {
             const valuesToMatch = groupBy.map(condition =>
                 resolvePathAndGet(fodderItem, condition.path)
