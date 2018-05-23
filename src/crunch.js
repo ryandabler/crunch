@@ -28,10 +28,15 @@ const objectify = iterable => {
 }
 
 const consolidateObj = (group, groupBy) => {
-    const retObj = {}
+    let retObj = {}
 
     groupBy.forEach(condition => {
-        retObj[condition.name] = resolvePathAndGet(group[0], condition.path);
+        retObj = mergeObjects(
+            retObj,
+            resolvePathAndSet(
+                resolvePathAndGet(group[0], condition.path),
+                condition.name)
+        );
     });
 
     return retObj;
