@@ -61,6 +61,26 @@ const resolvePathAndSet = (val, path) => {
     return retObj;
 }
 
+const siftObject = obj => {
+    const flatObj = destructure(obj);
+    const groupBy = [];
+    const calculations = [];
+
+    Object.entries(flatObj).forEach(entry => {
+        const [ key, val ] = entry;
+        
+        if (aggregations.isFunctional(key)) {
+            calculations.push(
+                { name: key.split(".")[0], path: val, operation: key.split(".").slice(1) }
+            );
+        } else {
+            groupBy.push({ name: key, path: val });
+        }
+    });
+    
+    return { groupBy, calculations };
+}
+
 const hashContents = arr => arr.map(elem => elem).join("")
 
 const aggregations = {
