@@ -42,6 +42,16 @@ const resolvePathAndGet = (obj, path) => {
 const hashContents = arr => arr.map(elem => elem).join("")
 
 const aggregations = {
+    functions: [ "$sum", "$avg" ],
+
+    isFunctional(path) {
+        return path.split(".")
+            .reduce(
+                (accum, val) => accum || aggregations.functions.includes(val),
+                false
+            );
+    },
+
     sum(group, path) {
         let reducedValue = 0;
         group.forEach(item => {
