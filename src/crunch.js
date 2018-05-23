@@ -83,6 +83,20 @@ const siftObject = obj => {
 
 const hashContents = arr => arr.map(elem => elem).join("")
 
+const destructure = (obj, path = null) => {
+    let retObj = {};
+    const entries = Object.entries(obj);
+
+    entries.forEach(entry => {
+        const [ key, val ] = entry;
+        const currentPath = path ? path + "." + key : key;
+        const subEntries = typeOf(val) === "Object" ? destructure(val, currentPath) : null;
+        retObj = subEntries ? { ...retObj, ...subEntries } : { ...retObj, [currentPath]: val };
+    });
+
+    return retObj;
+}
+
 const aggregations = {
     functions: [ "$sum", "$avg" ],
 
