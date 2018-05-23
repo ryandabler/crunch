@@ -92,6 +92,18 @@ const generateCalculation = (key, val, call = 1) => {
     return param;
 }
 
+const mergeObjects = (mainObj, subObj) => {
+    let retObj = { ...mainObj };
+    for (const key in subObj) {
+        if (key in mainObj) {
+            retObj[key] = mergeObjects(mainObj[key], subObj[key]);
+        } else {
+            retObj = { ...mainObj, ...subObj };
+        }
+    }
+    return retObj;
+}
+
 const siftObject = obj => {
     const flatObj = destructure(obj);
     const groupBy = [];
