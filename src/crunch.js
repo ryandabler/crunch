@@ -49,6 +49,18 @@ const resolvePathAndGet = (obj, path) => {
     return pointer;
 }
 
+const resolvePathAndSet = (val, path) => {
+    const retObj = {};
+    let pointer = retObj;
+
+    path.split(".").forEach((_path, idx, arr) => {
+        pointer[_path] = idx === arr.length - 1 ? val : {};
+        pointer = pointer[_path];
+    });
+
+    return retObj;
+}
+
 const hashContents = arr => arr.map(elem => elem).join("")
 
 const aggregations = {
