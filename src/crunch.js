@@ -293,3 +293,65 @@ Crunch.isPrime = number => {
 
 const crunch = data => 
     isIterable(data) ? new Crunch(objectify(data)) : new Crunch([])
+            begin = chunk - 1;
+            end = this.length - 1
+        }
+
+        for (let n = 0; n < this.length; n++) {
+            if (n < begin || n > end) {
+                retObj.push(null);
+                continue;
+            }
+
+            const range = {};
+            if (type === constants.MV_AVG_CENTER) {
+                range.begin = n - Math.floor(chunk / 2);
+                range.end = n + Math.floor(chunk / 2) - (chunk % 2 === 0 ? 1 : 0) + 1;
+            } else if (type === constants.MV_AVG_LEAD) {
+                range.begin = n;
+                range.end = n + chunk - 1 + 1;
+            } else {
+                range.begin = n - chunk + 1
+                range.end = n + 1;
+            }
+
+            console.log(this.slice(range));
+        }
+
+    }
+}
+
+Crunch.uniformDist = (begin = -1, end = 1) => {
+    return (end - begin) * Math.random() + begin;
+}
+
+Crunch.normalDist = (mean, std) => {
+    let s = 0;
+    let u, v;
+
+    while (s === 0 || s >= 1) {
+        [ u, v ] = [ Crunch.uniformDist(), Crunch.uniformDist() ];
+        s = u ** 2 + v ** 2;
+    }
+
+    const [ z0, z1 ] = [ u * Math.sqrt(-2 * Math.log(s) / s), null ];
+    return z0 * std + mean;
+}
+
+Crunch.round = (number, places) => {
+    return Math.round(number * 10 ** places) / 10 ** places;
+}
+
+Crunch.isPrime = number => {
+    const upperLimit = Math.ceil(Math.sqrt(number));
+    for (let n = 2; n <= upperLimit; n++) {
+        if (number % n === 0) return false;
+    }
+
+    return true;
+}
+
+const crunch = data => 
+    isIterable(data) ? new Crunch(objectify(data)) : new Crunch([])
+
+module.exports = { Crunch, crunch };
