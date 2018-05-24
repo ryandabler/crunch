@@ -25,14 +25,14 @@ const objectify = iterable => {
     return retObj;
 }
 
-const consolidateObj = (group, groupBy) => {
+const consolidateObj = (template, groupBy) => {
     let retObj = {}
 
     groupBy.forEach(condition => {
         retObj = mergeObjects(
             retObj,
             resolvePathAndSet(
-                resolvePathAndGet(group[0], condition.path),
+                resolvePathAndGet(template, condition.path),
                 condition.name)
         );
     });
@@ -248,7 +248,7 @@ class Crunch {
         return crunch(
             Array.from(groups).map(_group => {
                 const group = _group[1];
-                const consolidatedObj = consolidateObj(group, groupBy);
+                const consolidatedObj = consolidateObj(group[0], groupBy);
 
                 calculations.forEach(calculation => {
                     const { name, operation, param } = calculation
