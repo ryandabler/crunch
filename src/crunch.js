@@ -65,10 +65,13 @@ const resolvePathAndSet = (val, path) => {
     return retObj;
 }
 
+// TODO: Rename these parameters to be more descriptive
 const generateCalculation = (key, val, call = 1) => {
     let name = "";
     let operation;
     
+    // TODO: This could probably be reworked to simplify the logic now that it is only
+    // being run once
     if (call === 1) {
         key.split(".").forEach(path => {
             name += path.charAt(0) === "$" ? "" : path;
