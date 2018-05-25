@@ -404,47 +404,29 @@ class Crunch {
             })
         );
     }
+
+    movingAverage({ chunk, type, field = "$data" } = {}) {
+        if (![ constants.MV_AVG_CENTER, constants.MV_AVG_LEAD, constants.MV_AVG_TRAIL ].includes(type)) {
+            return this;
         }
 
-Crunch.uniformDist = (begin = -1, end = 1) => {
-    return (end - begin) * Math.random() + begin;
-}
+        const retArr = [];
+        let begin, end;
 
-Crunch.normalDist = (mean, std) => {
-    let s = 0;
-    let u, v;
-
-    while (s === 0 || s >= 1) {
-        [ u, v ] = [ Crunch.uniformDist(), Crunch.uniformDist() ];
-        s = u ** 2 + v ** 2;
-    }
-
-    const [ z0, z1 ] = [ u * Math.sqrt(-2 * Math.log(s) / s), null ];
-    return z0 * std + mean;
-}
-
-Crunch.round = (number, places) => {
-    return Math.round(number * 10 ** places) / 10 ** places;
-}
-
-Crunch.isPrime = number => {
-    const upperLimit = Math.ceil(Math.sqrt(number));
-    for (let n = 2; n <= upperLimit; n++) {
-        if (number % n === 0) return false;
-    }
-
-    return true;
-}
-
-const crunch = data => 
-    isIterable(data) ? new Crunch(objectify(data)) : new Crunch([])
+        if (type === constants.MV_AVG_CENTER) {
+            begin = Math.floor(chunk / 2);
+            end = this.length - begin - (chunk % 2 === 0 ? 0 : 1);
+        } else if (type === constants.MV_AVG_LEAD) {
+            begin = 0;
+            end = this.length - chunk;
+        } else {
             begin = chunk - 1;
             end = this.length - 1
         }
 
         for (let n = 0; n < this.length; n++) {
             if (n < begin || n > end) {
-                retObj.push(null);
+                retArr.push(null);
                 continue;
             }
 
@@ -460,9 +442,10 @@ const crunch = data =>
                 range.end = n + 1;
             }
 
-            console.log(this.slice(range));
+            retArr.push( this.slice(range).group({avg: {$avg: field}}).data()[0].avg );
         }
 
+        return retArr;
     }
 }
 
