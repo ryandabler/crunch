@@ -88,9 +88,9 @@ const consolidateObj = (template, groupBy) => {
 const resolvePathAndGet = (obj, path) => {
     const segments = path.split(".");
     let pointer = obj;
+    const validTypes = [ constants.TYPE_OBJECT, constants.TYPE_ARRAY ];
     
-	// TODO: include TYPE_ARRAY in this check
-	while (typeOf(pointer) === constants.TYPE_OBJECT && segments.length > 0) {
+	while (validTypes.includes(typeOf(pointer)) && segments.length > 0) {
 		const segment = segments.shift();
 		pointer = pointer[segment];
     }
