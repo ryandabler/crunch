@@ -125,38 +125,37 @@ const resolvePathAndSet = (val, path) => {
  * parameter could be another calculation, so this object is filled out
  * recursively.
  * 
- * @param {string} key Path from which to generate the operations
- * @param {*} val Collection of paths to values in the object
+ * @param {string} path Path from which to generate the operations
+ * @param {*} destination Collection of paths to values in the object
  * @param {number} call Recursive depth of the function
  */
-// TODO: Rename these parameters to be more descriptive
-const generateCalculation = (key, val, call = 1) => {
+const generateCalculation = (path, destination, call = 1) => {
     let name = "";
     let operation;
     
     // TODO: This could probably be reworked to simplify the logic now that it is only
     // being run once
     if (call === 1) {
-        key.split(".").forEach(path => {
+        path.split(".").forEach(path => {
             name += path.charAt(0) === "$" ? "" : path;
             operation = path.charAt(0) === "$" && operation === undefined
                 ? path
                 : operation;
         });
     } else {
-        operation = key.split(".")[0];
+        operation = path.split(".")[0];
     }
 
-    const tail = key.split(".").filter(path =>
+    const tail = path.split(".").filter(path =>
         !name.split(".").includes(path) && path !== operation
     );
     
     const param = {
         name,
         operation,
-        param: key === ""
-            ? val
-            : generateCalculation(key.split(".").slice(2).join("."), val, call + 1)
+        param: path === ""
+            ? destination
+            : generateCalculation(path.split(".").slice(2).join("."), destination, call + 1)
     };
 
     // If we are on the final operation, param will be another nested { param }
