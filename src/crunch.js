@@ -159,6 +159,8 @@ const generateCalculation = (key, val, call = 1) => {
             : generateCalculation(key.split(".").slice(2).join("."), val, call + 1)
     };
 
+    // If we are on the final operation, param will be another nested { param }
+    // object. Move up one level.
     if (param.param.operation === "") param.param = param.param.param;
     return param;
 }
