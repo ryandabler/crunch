@@ -95,7 +95,7 @@ const resolvePathAndGet = (obj, path) => {
 		pointer = pointer[segment];
     }
 	
-    return pointer;
+    return segments.length === 0 ? pointer : null;
 }
 
 /**
