@@ -6,5 +6,6 @@ module.exports = Object.freeze({
     TYPE_STRING: "String",
     MV_AVG_TRAIL: "TRAIL",
     MV_AVG_LEAD: "LEAD",
-    MV_AVG_CENTER: "CENTER"
+    MV_AVG_CENTER: "CENTER",
+    AGG_FUNCS: [ "$sum", "$avg" ]
 });

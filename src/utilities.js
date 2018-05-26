@@ -1,0 +1,291 @@
+////////////////////
+// Initialize
+////////////////////
+const constants = require("./constants");
+
+////////////////////
+// Main
+////////////////////
+/**
+ * Determines the type of any JavaScript element.
+ * 
+ * Takes the output from Object.prototype.toString() which is of the form
+ * "[object @@@@@]" and returns "@@@@@".
+ * 
+ * @param {*} obj Item to determine the type of
+ * @returns {string}
+ */
+const typeOf = obj =>
+    Object.prototype.toString.call(obj)
+        .split(" ")[1]
+        .slice(0, -1)
+
+/**
+ * Determines whether supplied item is iterable.
+ * 
+ * @param {*} obj Item to determine iterability for
+ * @returns {boolean}
+ */
+const isIterable = obj =>
+    obj ? typeOf(obj[Symbol.iterator]) === constants.TYPE_FUNCTION : false
+
+/**
+* Ensures all elements of an iterable object are objects.
+* 
+* @param {Object} iterable Container whose elements should be converted into objects
+* @returns {Array}
+*/
+const objectify = iterable => {
+    const retObj = []
+    for (let elem of iterable) {
+        retObj.push(
+            typeOf(elem) !== constants.TYPE_OBJECT ? { $data: elem } : elem
+        );
+    }
+
+    return retObj;
+}
+
+/**
+* Generates an object whose values come from the template with details supplied
+* by groupBy.
+* 
+* Each condition in groupBy is converted into an object with the path specified by
+* condition.name and the location of the value in template specified by condition.path.
+* Each object is then merged into an accumulating object that is returned.
+* 
+* @param {Object} template Supplies the values for the final object
+* @param {Array} groupBy Supplies the names and locations of the final object
+* @returns {Object}
+*/
+const consolidateObj = (template, groupBy) => {
+    let retObj = {}
+
+    groupBy.forEach(condition => {
+        retObj = mergeObjects(
+            retObj,
+            resolvePathAndSet(
+                resolvePathAndGet(template, condition.path),
+                condition.name)
+        );
+    });
+
+    return retObj;
+}
+
+/**
+* Retrieves the value from a nested object given a path.
+* 
+* Iterates over an array containing the path to traverse in obj to find the value.
+* The value of each step in the path should be an object except for the final stage.
+* If any other step is not an object, should return null.
+* 
+* @param {Object} obj Object to retrieve value from
+* @param {string} path Period-separated path to desired value
+* @returns {*}
+*/
+const resolvePathAndGet = (obj, path) => {
+    const segments = path.split(".");
+    let pointer = obj;
+    const validTypes = [ constants.TYPE_OBJECT, constants.TYPE_ARRAY ];
+
+    while (validTypes.includes(typeOf(pointer)) && segments.length > 0) {
+        const segment = segments.shift();
+        pointer = pointer[segment];
+    }
+
+    return segments.length === 0 ? pointer : null;
+}
+
+/**
+* Creates a nested object whose keys are the specified path, terminating at the value.
+* 
+* @param {*} val Value to be inserted into object
+* @param {string} path Specified path to the value
+* @returns {Object}
+*/
+const resolvePathAndSet = (val, path) => {
+    const retObj = {};
+    let pointer = retObj;
+
+    path.split(".").forEach((_path, idx, arr) => {
+        pointer[_path] = idx === arr.length - 1 ? val : {};
+        pointer = pointer[_path];
+    });
+
+    return retObj;
+}
+
+/**
+* Generates a calculation object for use in aggregating a collection of documents.
+* 
+* Splits a period-separated path string into segments and, for each segment,
+* determines the operation and the parameter supplied to the operation. The
+* parameter could be another calculation, so this object is filled out
+* recursively.
+* 
+* @param {string} path Path from which to generate the operations
+* @param {*} destination Collection of paths to values in the object
+* @param {number} call Recursive depth of the function
+*/
+const generateCalculation = (path, destination, call = 1) => {
+    let name = "";
+    let operation;
+
+    // TODO: This could probably be reworked to simplify the logic now that it is only
+    // being run once
+    if (call === 1) {
+        path.split(".").forEach(path => {
+            name += path.charAt(0) === "$" ? "" : path;
+            operation = path.charAt(0) === "$" && operation === undefined
+                ? path
+                : operation;
+        });
+    } else {
+        operation = path.split(".")[0];
+    }
+
+    const tail = path.split(".").filter(path =>
+        !name.split(".").includes(path) && path !== operation
+    );
+
+    const param = {
+        name,
+        operation,
+        param: path === ""
+            ? destination
+            : generateCalculation(path.split(".").slice(2).join("."), destination, call + 1)
+    };
+
+    // If we are on the final operation, param will be another nested { param }
+    // object. Move up one level.
+    if (param.param.operation === "") param.param = param.param.param;
+    return param;
+}
+
+/**
+* Merges an object of arbitrary depth into another object.
+* 
+* Traverses the main object, ensuring that the key in subObj is
+* in mainObj, and recursively merging the next layer of each object.
+* When a key is found in subObj that isn't in mainObj, the two 
+* can be safely merged and the merged object is returned.
+* 
+* @param {Object} mainObj Object to have other object merged into
+* @param {Object} subObj Object being merged
+* @returns {Object}
+*/
+const mergeObjects = (mainObj, subObj) => {
+    let retObj = { ...mainObj };
+    for (const key in subObj) {
+        if (key in mainObj) {
+            retObj[key] = mergeObjects(mainObj[key], subObj[key]);
+        } else {
+            retObj = { ...retObj, [key]: subObj[key] };
+        }
+    }
+    return retObj;
+}
+
+/**
+* Sorts a nested object into grouping and calculation paths.
+* 
+* Destructures an object and then traverses each element to determine
+* if it is calculation or grouping and adds it to the correct array.
+* Returns an object containing both arrays.
+* 
+* @param {Object} obj
+* @returns {Object}
+*/
+const siftObject = obj => {
+    const flatObj = destructure(obj);
+    const groupBy = [];
+    const calculations = [];
+
+    Object.entries(flatObj).forEach(entry => {
+        const [ key, val ] = entry;
+        
+        if (isFunctional(key)) {
+            calculations.push( generateCalculation(key, val) );
+        } else {
+            groupBy.push({ name: key, path: val });
+        }
+    });
+
+    return { groupBy, calculations };
+}
+
+/**
+* Creates a textual representation of the contents of an array.
+* 
+* @param {Array} arr 
+* @returns {Array}
+*/
+const hashContents = arr => arr.map(elem => {
+    let hash = "";
+    if (typeOf(elem) === "Object") {
+        Object.entries(elem).sort((a, b) => a[0] <= b[0] ? -1 : 1).forEach(([key, val]) => hash += hashContents([ val ]))
+    } else if (typeOf(elem) === "Array") {
+        elem.forEach(_elem => hash += hashContents(_elem))
+    } else {
+        hash = elem;
+    }
+    return hash;
+}).join("")
+
+/**
+* Traverses an object and flattens it.
+* 
+* Takes an object of arbitrary nestedness recursively traverses each path to
+* generate a string representation of the path all the way down to the actual
+* value. This path then gets added to a new object as key, with the indicated
+* value as the value.
+* 
+* @param {Object} obj Object to flatten
+* @param {string} [path=null] Path variable to track the recursive depth
+* @returns {Object}
+*/
+const destructure = (obj, path = null) => {
+    let retObj = {};
+    const entries = Object.entries(obj);
+
+    entries.forEach(entry => {
+        const [ key, val ] = entry;
+        const currentPath = path ? path + "." + key : key;
+        const subEntries = typeOf(val) === constants.TYPE_OBJECT ? destructure(val, currentPath) : null;
+        retObj = subEntries ? { ...retObj, ...subEntries } : { ...retObj, [currentPath]: val };
+    });
+
+    return retObj;
+}
+
+/**
+ * Determines whether an object path represents a calculation directive.
+ * 
+ * @param {string} path 
+ * @returns {boolean}
+ */
+// TODO: Improve logic to determine if path is truly calculation;
+// e.g., once we've started the "$" sections, all nests must be "$" as well
+const isFunctional = path => {
+    return path.split(".")
+        .reduce(
+            (accum, val) => accum || constants.AGG_FUNCS.includes(val),
+            false
+        );
+}
+
+module.exports = {
+    typeOf,
+    isIterable,
+    objectify,
+    consolidateObj,
+    resolvePathAndGet,
+    resolvePathAndSet,
+    generateCalculation,
+    mergeObjects,
+    siftObject,
+    hashContents,
+    destructure,
+    isFunctional
+};
