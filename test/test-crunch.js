@@ -27,16 +27,33 @@ describe("Crunch", function() {
     });
 
     describe(".slice()", function() {
+        let data;
+
+        beforeEach(function() {
+            data = crunch([ 1,2,3,4,5,6,7,8,9 ]);
+        })
+
         it("Should return entire dataset if no parameters supplied", function() {
-            expect(1).to.equal(2);
+            expect(data.slice()).to.deep.equal(data);
         });
 
-        it("Should supply missing parameter if the other is supplied", function() {
-            expect(1).to.equal(2);
+        it("Should supply begin parameter if only end is supplied", function() {
+            expect(
+                data.slice({ end: 3 })
+            ).to.deep.equal(data.slice({ begin: 0, end: 3 }));
+        });
+
+        it("Should supply end parameter if only begin is supplied", function() {
+            expect(
+                data.slice({ begin: 3 })
+            ).to.deep.equal(data.slice({ begin: 3, end: data.length }));
         });
 
         it("Should return dataset between given indices", function() {
-            expect(1).to.equal(2);
+            const [ begin, end ] = [ 1, 4 ];
+            const answer = crunch([ data[1], data[2], data[3] ]);
+
+            expect(data.slice({ begin, end })).to.deep.equal(answer)
         });
     });
 
