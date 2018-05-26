@@ -222,7 +222,17 @@ const siftObject = obj => {
  * @param {Array} arr 
  * @returns {Array}
  */
-const hashContents = arr => arr.map(elem => elem).join("")
+const hashContents = arr => arr.map(elem => {
+	let hash = "";
+	if (typeOf(elem) === "Object") {
+		Object.entries(elem).sort((a, b) => a[0] <= b[0] ? -1 : 1).forEach(([key, val]) => hash += hashContents([ val ]))
+    } else if (typeOf(elem) === "Array") {
+		elem.forEach(_elem => hash += hashContents(_elem))
+    } else {
+		hash = elem;
+    }
+	return hash;
+}).join("")
 
 /**
  * Traverses an object and flattens it.
