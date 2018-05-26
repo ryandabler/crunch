@@ -182,7 +182,7 @@ const mergeObjects = (mainObj, subObj) => {
         if (key in mainObj) {
             retObj[key] = mergeObjects(mainObj[key], subObj[key]);
         } else {
-            retObj = { ...mainObj, ...subObj };
+            retObj = { ...retObj, [key]: subObj[key] };
         }
     }
     return retObj;
