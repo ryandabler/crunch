@@ -132,11 +132,14 @@ class Crunch {
     }
 }
 
-Crunch.uniformDist = (begin = -1, end = 1) => {
+const crunch = data => 
+    isIterable(data) ? new Crunch(objectify(data)) : new Crunch([])
+
+crunch.uniformDist = (begin = -1, end = 1) => {
     return (end - begin) * Math.random() + begin;
 }
 
-Crunch.normalDist = (mean, std) => {
+crunch.normalDist = (mean, std) => {
     let s = 0;
     let u, v;
 
@@ -149,11 +152,11 @@ Crunch.normalDist = (mean, std) => {
     return z0 * std + mean;
 }
 
-Crunch.round = (number, places) => {
+crunch.round = (number, places) => {
     return Math.round(number * 10 ** places) / 10 ** places;
 }
 
-Crunch.isPrime = number => {
+crunch.isPrime = number => {
     const upperLimit = Math.ceil(Math.sqrt(number));
     for (let n = 2; n <= upperLimit; n++) {
         if (number % n === 0) return false;
@@ -161,8 +164,5 @@ Crunch.isPrime = number => {
 
     return true;
 }
-
-const crunch = data => 
-    isIterable(data) ? new Crunch(objectify(data)) : new Crunch([])
 
 module.exports = { Crunch, crunch };
