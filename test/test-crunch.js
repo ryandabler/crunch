@@ -57,7 +57,7 @@ describe("Crunch", function() {
         });
     });
 
-    describe.only(".group()", function() {
+    describe(".group()", function() {
         let dataset;
 
         beforeEach(function() {
