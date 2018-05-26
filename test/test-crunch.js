@@ -177,15 +177,30 @@ describe("Crunch", function() {
         });
 
         it("Should generate a centered moving average", function() {
-            expect(2).to.equal(1);
+            const mvAvg = dataset.movingAverage(
+                { chunk: 4, type: "CENTER", field: "quantity" }
+            );
+            const answer = [ null, null, 75.5, 168.25, 186.75, null ];
+
+            expect(mvAvg).to.deep.equal(answer);
         });
 
         it("Should generate a trailing moving average", function() {
-            expect(2).to.equal(1);
+            const mvAvg = dataset.movingAverage(
+                { chunk: 4, type: "TRAIL", field: "quantity" }
+            );
+            const answer = [ null, null, null, 75.5, 168.25, 186.75 ];
+
+            expect(mvAvg).to.deep.equal(answer);
         });
 
         it("Should generate a leading moving average", function() {
-            expect(2).to.equal(1);
+            const mvAvg = dataset.movingAverage(
+                { chunk: 4, type: "LEAD", field: "quantity" }
+            );
+            const answer = [ 75.5, 168.25, 186.75, null, null, null ];
+
+            expect(mvAvg).to.deep.equal(answer);
         });
     });
 });
