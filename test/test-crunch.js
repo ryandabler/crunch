@@ -13,8 +13,16 @@ const expect = chai.expect;
 ////////////////////////////
 describe("Crunch", function() {
     describe(".data()", function() {
-        it("Should return data as an array", function() {
-            expect(1).to.equal(2);
+        it("Should return data as an array of objects", function() {
+            const data = [ { a: 1 }, { a: 2 } ];
+            const result = crunch(data).data();
+            expect(result).to.deep.equal(data);
+        });
+
+        it("Should return data as an array of primitives", function() {
+            const data = [ 1, 2, "a" ];
+            const result = crunch(data).data();
+            expect(result).to.deep.equal(data);
         });
     });
 
