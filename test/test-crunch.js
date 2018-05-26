@@ -12,16 +12,6 @@ const expect = chai.expect;
 // Test
 ////////////////////////////
 describe("Crunch", function() {
-    describe(".constructor()", function() {
-        it("Should instantiate a class from an iterable", function() {
-            expect(1).to.equal(2);
-        });
-
-        it("Should not instantiate a class if not passed an iterable", function() {
-            expect(1).to.equal(2);
-        });
-    });
-
     describe(".data()", function() {
         it("Should return data as an array", function() {
             expect(1).to.equal(2);
