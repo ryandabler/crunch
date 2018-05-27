@@ -43,6 +43,8 @@ const $sum = (group, param) => {
                 .reduce((accum, val) => accum + val);
         } else if (typeOf(param) === constants.TYPE_OBJECT) {
             reducedValue += aggregations[param.operation]([ item ], param.param);
+        } else if (typeOf(param) === constants.TYPE_STRING) {
+            reducedValue += resolvePathAndGet(item, param);
         }
     });
 
@@ -72,6 +74,8 @@ const $multiply = (group, param) => {
                 .reduce((accum, val) => accum * val);
         } else if (typeOf(param) === constants.TYPE_OBJECT) {
             reducedValue *= aggregations[param.operation]([ item ], param.param);
+        } else if (typeOf(param) === constants.TYPE_STRING) {
+            reducedValue += resolvePathAndGet(item, param);
         }
     });
 
