@@ -121,10 +121,12 @@ const $avg = (group, param) => {
 
 const aggregations = {
     $sum,
+    $multiply,
     $avg
 }
 
 module.exports = {
     $sum,
+    $multiply,
     $avg
 };
