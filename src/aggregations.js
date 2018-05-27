@@ -50,6 +50,35 @@ const $sum = (group, param) => {
 }
 
 /**
+ * Multiplies values in a series of documents.
+ * 
+ * Depending on the type of the param, different behavior is done.
+ * If param is a:
+ *     number, it merely gets multiplied to reducedValue and returned.
+ *     array, the whole array is a list of paths to values that are multiplied.
+ *     object, it is multiplying the output of another operation.
+ * 
+ * @param {Array} group 
+ * @param {*} param 
+ * @returns {number}
+ */
+const $multiply = (group, param) => {
+    let reducedValue = 1;
+    group.forEach(item => {
+        if (typeOf(param) === constants.TYPE_NUMBER) {
+            reducedValue *= param;
+        } else if (typeOf(param) === constants.TYPE_ARRAY) {
+            reducedValue *= param.map(_path => resolvePathAndGet(item, _path))
+                .reduce((accum, val) => accum * val);
+        } else if (typeOf(param) === constants.TYPE_OBJECT) {
+            reducedValue *= aggregations[param.operation]([ item ], param.param);
+        }
+    });
+
+    return reducedValue;
+}
+
+/**
  * Averages a series of documents.
  * 
  * Depending on the type of the param, different behavior is done.
