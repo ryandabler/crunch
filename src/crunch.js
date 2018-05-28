@@ -169,4 +169,14 @@ crunch.eval = expr => {
     return Function(`"use strict"; return ${expr};`)();
 }
 
+crunch.sequence = (expr, _var, start, end) => {
+    const retArr = [];
+    for (let n = start; n <= end; n++) {
+        let _expr = expr.replace(_var, n);
+        retArr.push(crunch.eval(_expr));
+    }
+
+    return retArr;
+}
+
 module.exports = { Crunch, crunch };
