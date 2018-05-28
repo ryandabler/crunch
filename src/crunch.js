@@ -88,6 +88,21 @@ class Crunch {
         );
     }
 
+    sample(number) {
+        const retArr = [];
+        const sequence = crunch.sequence("n", "n", 0, this.length - 1);
+
+        while (retArr.length < number) {
+            const idx = Math.floor(crunch.uniformDist(0, sequence.length));
+            const val = sequence.splice(idx, 1);
+            retArr.push(val);
+        }
+
+        return crunch(
+            retArr.map(idx => this[idx])
+        );
+    }
+
     movingAverage({ chunk, type, field = "$data" } = {}) {
         if (![ constants.MV_AVG_CENTER, constants.MV_AVG_LEAD, constants.MV_AVG_TRAIL ].includes(type)) {
             return this;
