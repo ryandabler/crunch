@@ -166,7 +166,7 @@ crunch.isPrime = number => {
 }
 
 crunch.eval = expr => {
-    return Function(expr)();
+    return Function(`"use strict"; return ${expr};`)();
 }
 
 module.exports = { Crunch, crunch };
