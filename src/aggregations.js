@@ -3,17 +3,7 @@
 ////////////////////
 const {
     typeOf,
-    isIterable,
-    objectify,
-    consolidateObj,
-    resolvePathAndGet,
-    resolvePathAndSet,
-    generateCalculation,
-    mergeObjects,
-    siftObject,
-    hashContents,
-    destructure,
-    isFunctional
+    resolvePathAndGet
 } = require("./utilities");
 const constants = require("./constants");
 
