@@ -275,6 +275,56 @@ const isFunctional = path => {
         );
 }
 
+/**
+ * Determines the range for which a moving average can validly calculate values.
+ * 
+ * @param {string} type Indicator of moving average type
+ * @param {number} dataSize Total size of the dataset
+ * @param {number} chunk How many numbers will be averaged together
+ * @returns {Object.<string number>}
+ */
+const determineMvAvgValidRange = (type, dataSize, chunk) => {
+    let begin, end;
+
+    if (type === constants.MV_AVG_CENTER) {
+        begin = Math.floor(chunk / 2);
+        end = dataSize - begin - (chunk % 2 === 0 ? 0 : 1);
+    } else if (type === constants.MV_AVG_LEAD) {
+        begin = 0;
+        end = dataSize - chunk;
+    } else {
+        begin = chunk - 1;
+        end = dataSize - 1
+    }
+
+    return { begin, end }
+}
+
+/**
+ * Determines the range of items in dataset that should be averaged together.
+ * 
+ * @param {string} type Indicator of moving average type
+ * @param {number} offset Current position in data set
+ * @param {number} chunk How many numbers will be averaged together
+ * @returns {Object.<string, number>}
+ */
+const determineMvAvgSliceRange = (type, offset, chunk) => {
+    let begin, end;
+
+    if (type === constants.MV_AVG_CENTER) {
+        begin = offset - Math.floor(chunk / 2);
+        end = offset + Math.floor(chunk / 2) - (chunk % 2 === 0 ? 1 : 0) + 1;
+    } else if (type === constants.MV_AVG_LEAD) {
+        begin = offset;
+        end = offset + chunk - 1 + 1;
+    } else {
+        begin = offset - chunk + 1
+        end = offset + 1;
+    }
+
+    return { begin, end };
+}
+
 module.exports = {
     typeOf,
     isIterable,
@@ -287,5 +337,7 @@ module.exports = {
     siftObject,
     hashContents,
     destructure,
-    isFunctional
+    isFunctional,
+    determineMvAvgValidRange,
+    determineMvAvgSliceRange
 };

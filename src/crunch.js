@@ -14,7 +14,9 @@ const {
     mergeObjects,
     siftObject,
     hashContents,
-    destructure
+    destructure,
+    determineMvAvgValidRange,
+    determineMvAvgSliceRange
 } = require("./utilities");
 
 ////////////////////
@@ -109,18 +111,7 @@ class Crunch {
         }
 
         const retArr = [];
-        let begin, end;
-
-        if (type === constants.MV_AVG_CENTER) {
-            begin = Math.floor(chunk / 2);
-            end = this.length - begin - (chunk % 2 === 0 ? 0 : 1);
-        } else if (type === constants.MV_AVG_LEAD) {
-            begin = 0;
-            end = this.length - chunk;
-        } else {
-            begin = chunk - 1;
-            end = this.length - 1
-        }
+        const { begin, end } = determineMvAvgValidRange(type, this.length, chunk);
 
         for (let n = 0; n < this.length; n++) {
             if (n < begin || n > end) {
@@ -128,18 +119,7 @@ class Crunch {
                 continue;
             }
 
-            const range = {};
-            if (type === constants.MV_AVG_CENTER) {
-                range.begin = n - Math.floor(chunk / 2);
-                range.end = n + Math.floor(chunk / 2) - (chunk % 2 === 0 ? 1 : 0) + 1;
-            } else if (type === constants.MV_AVG_LEAD) {
-                range.begin = n;
-                range.end = n + chunk - 1 + 1;
-            } else {
-                range.begin = n - chunk + 1
-                range.end = n + 1;
-            }
-
+            const range = determineMvAvgSliceRange(type, n, chunk);
             retArr.push( this.slice(range).group({avg: {$avg: field}}).data()[0].avg );
         }
 
