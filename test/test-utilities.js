@@ -49,4 +49,32 @@ describe("Utilities", function() {
             });
         });
     });
+
+    describe("isIterable()", function() {
+        it("Should return true", function() {
+            const objectsToTest = [
+                [1, 2, 3],
+                new Map(),
+                "Hello",
+            ];
+            const results = objectsToTest.map(isIterable);
+
+            results.forEach(result => {
+                expect(result).to.be.true;
+            });
+        });
+
+        it("Should return false", function() {
+            const objectsToTest = [
+                1,
+                {a: 1},
+                () => {},
+            ];
+            const results = objectsToTest.map(isIterable);
+
+            results.forEach(result => {
+                expect(result).to.be.false;
+            });
+        });
+    });
 });
