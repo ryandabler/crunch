@@ -64,7 +64,7 @@ describe("Crunch", function() {
             dataset = crunch([
                 {
                     invoiceId: "A1",
-                    date: new Date(2018, 04, 23),
+                    date: new Date(2018, 4, 23),
                     vendor: "Vendor 1",
                     quantity: 200,
                     price: 30,
@@ -75,7 +75,7 @@ describe("Crunch", function() {
                 },
                 {
                     invoiceId: "B2",
-                    date: new Date(2018, 04, 24),
+                    date: new Date(2018, 4, 24),
                     vendor: "Vendor 2",
                     quantity: 5,
                     price: 6.4,
@@ -86,7 +86,7 @@ describe("Crunch", function() {
                 },
                 {
                     invoiceId: "C3",
-                    date: new Date(2018, 04, 25),
+                    date: new Date(2018, 4, 25),
                     vendor: "Vendor 1",
                     quantity: 7,
                     price: 100,
