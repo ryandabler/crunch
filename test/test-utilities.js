@@ -97,8 +97,8 @@ describe("Utilities", function() {
             ];
             const results = objectsToTest.map(objectify);
             const answers = [
-                [{ "$data": 1 }, { "$data": 2 }],
-                [{ "$data": "a" }, { "$data": "b" }, { "$data": "c" }]
+                [{ $data: 1 }, { $data: 2 }],
+                [{ $data: "a" }, { $data: "b" }, { $data: "c" }]
             ]
             results.forEach((result, idx) => {
                 expect(result).to.deep.equal(answers[idx]);
