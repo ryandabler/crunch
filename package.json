@@ -26,5 +26,28 @@
     "cross-env": "^5.1.6",
     "mocha": "^5.2.0",
     "nyc": "^12.0.1"
+  },
+  "nyc": {
+    "require": [
+      "babel-register"
+    ],
+    "sourceMap": false,
+    "instrument": false,
+    "reporter": [
+      "text",
+      "lcov"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          "istanbul"
+        ]
+      }
+    }
   }
 }
