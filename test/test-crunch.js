@@ -136,7 +136,7 @@ describe("Crunch", function() {
                 for (const key in document) {
                     expect(key in specs).to.be.true;
                 }
-            };
+            }
         });
 
         it("Should return data an instance of Crunch class", function() {
