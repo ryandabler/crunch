@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "mocha --exit",
-    "coverage": "node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- -R spec ./test/*"
+    "coverage": "node node_modules/istanbul/lib/cli.js cover --include-all-sources node_modules/mocha/bin/_mocha -- -R spec ./test/*"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,6 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "coveralls": "^3.0.1",
-    "istanbul": "^0.4.5",
     "mocha": "^5.2.0"
   }
 }
