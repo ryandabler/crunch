@@ -105,4 +105,23 @@ describe("Utilities", function() {
             });
         });
     });
+
+    describe("consolidateObj()", function() {
+        it("Should extract values from an object into a new one", function() {
+            const template = { a: { b: 1, c: 2}, d: 3, e: { f: { g: [ 1, 2 ] } } };
+            const conditions = [
+                { path: "a.c", name: "ac" },
+                { path: "d", name: "d.e" },
+                { path: "e.f.g.1", name: "efg1" }
+            ];
+            const result = consolidateObj(template, conditions);
+            const answer = {
+                ac: 2,
+                d: { e: 3 },
+                efg1: 2
+            };
+
+            expect(result).to.deep.equal(answer);
+        });
+    });
 });
