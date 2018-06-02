@@ -4,8 +4,8 @@
   "description": "A library for anaylizing data sets",
   "main": "src/index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test nyc mocha",
-    "coverage": "node node_modules/istanbul/lib/cli.js cover --include-all-sources node_modules/mocha/bin/_mocha -- -R spec ./test/*"
+    "test": "mocha --exit",
+    "coverage": "cross-env NODE_ENV=test nyc mocha"
   },
   "repository": {
     "type": "git",
