@@ -77,4 +77,32 @@ describe("Utilities", function() {
             });
         });
     });
+
+    describe("objectify()", function() {
+        it("Should do nothing if given a TYPE_OBJECT", function() {
+            const objectsToTest = [
+                [{a: 1}, {b: 2}]
+            ];
+            const results = objectsToTest.map(objectify);
+
+            results.forEach((result, idx) => {
+                expect(result).to.deep.equal(objectsToTest[idx]);
+            });
+        });
+
+        it("Should convert contents to { $data: ... } if not given TYPE_OBJECT", function() {
+            const objectsToTest = [
+                [1, 2],
+                "abc"
+            ];
+            const results = objectsToTest.map(objectify);
+            const answers = [
+                [{ "$data": 1 }, { "$data": 2 }],
+                [{ "$data": "a" }, { "$data": "b" }, { "$data": "c" }]
+            ]
+            results.forEach((result, idx) => {
+                expect(result).to.deep.equal(answers[idx]);
+            });
+        });
+    });
 });
