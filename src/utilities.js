@@ -325,6 +325,19 @@ const determineMvAvgSliceRange = (type, offset, chunk) => {
     return { begin, end };
 }
 
+const copyObject = obj => {
+    const paths = destructure(obj);
+    let retObj = {};
+    for (const path in paths) {
+        retObj = mergeObjects(
+            retObj,
+            resolvePathAndSet(resolvePathAndGet(obj, path), path)
+        );
+    }
+
+    return retObj;
+}
+
 module.exports = {
     typeOf,
     isIterable,
@@ -339,5 +352,6 @@ module.exports = {
     destructure,
     isFunctional,
     determineMvAvgValidRange,
-    determineMvAvgSliceRange
+    determineMvAvgSliceRange,
+    copyObject
 };
