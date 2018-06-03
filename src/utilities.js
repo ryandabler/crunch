@@ -145,10 +145,6 @@ const generateCalculation = (path, destination, call = 1) => {
         operation = path.split(".")[0];
     }
 
-    const tail = path.split(".").filter(path =>
-        !name.split(".").includes(path) && path !== operation
-    );
-
     const param = {
         name,
         operation,
