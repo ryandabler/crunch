@@ -299,6 +299,15 @@ const determineMvAvgSliceRange = (type, offset, chunk) => {
     return { begin, end };
 }
 
+/**
+ * Takes an object and returns a copy of it
+ * 
+ * Destructures the object into its component paths, and creates a new object from
+ * that path with the final value being the original value. Merges this new object
+ * into the object that will finally be returned to the user.
+ * 
+ * @param {Object} obj Object to be copied
+ */
 const copyObject = obj => {
     const paths = destructure(obj);
     let retObj = {};
