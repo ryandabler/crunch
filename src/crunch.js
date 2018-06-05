@@ -1,11 +1,10 @@
 ////////////////////
 // Initialize
 ////////////////////
+const { isIterable } = require("tupos");
 const constants = require("./constants");
 const aggregations = require("./aggregations");
 const {
-    typeOf,
-    isIterable,
     objectify,
     consolidateObj,
     resolvePathAndGet,

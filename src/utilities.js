@@ -1,34 +1,12 @@
 ////////////////////
 // Initialize
 ////////////////////
+const { typeOf, types } = require("tupos");
 const constants = require("./constants");
 
 ////////////////////
 // Main
 ////////////////////
-/**
- * Determines the type of any JavaScript element.
- * 
- * Takes the output from Object.prototype.toString() which is of the form
- * "[object @@@@@]" and returns "@@@@@".
- * 
- * @param {*} obj Item to determine the type of
- * @returns {string}
- */
-const typeOf = obj =>
-    Object.prototype.toString.call(obj)
-        .split(" ")[1]
-        .slice(0, -1)
-
-/**
- * Determines whether supplied item is iterable.
- * 
- * @param {*} obj Item to determine iterability for
- * @returns {boolean}
- */
-const isIterable = obj =>
-    obj ? typeOf(obj[Symbol.iterator]) === constants.TYPE_FUNCTION : false
-
 /**
 * Ensures all elements of an iterable object are objects.
 * 
@@ -39,7 +17,7 @@ const objectify = iterable => {
     const retObj = []
     for (let elem of iterable) {
         retObj.push(
-            typeOf(elem) !== constants.TYPE_OBJECT ? { $data: elem } : elem
+            typeOf(elem) !== types.OBJECT ? { $data: elem } : elem
         );
     }
 
@@ -87,7 +65,7 @@ const consolidateObj = (template, groupBy) => {
 const resolvePathAndGet = (obj, path) => {
     const segments = path.split(".");
     let pointer = obj;
-    const validTypes = [ constants.TYPE_OBJECT, constants.TYPE_ARRAY ];
+    const validTypes = [ types.OBJECT, types.ARRAY ];
 
     while (validTypes.includes(typeOf(pointer)) && segments.length > 0) {
         const segment = segments.shift();
@@ -248,7 +226,7 @@ const destructure = (obj, path = null) => {
     entries.forEach(entry => {
         const [ key, val ] = entry;
         const currentPath = path ? path + "." + key : key;
-        const subEntries = typeOf(val) === constants.TYPE_OBJECT ? destructure(val, currentPath) : null;
+        const subEntries = typeOf(val) === types.OBJECT ? destructure(val, currentPath) : null;
         retObj = subEntries ? { ...retObj, ...subEntries } : { ...retObj, [currentPath]: val };
     });
 
@@ -335,8 +313,6 @@ const copyObject = obj => {
 }
 
 module.exports = {
-    typeOf,
-    isIterable,
     objectify,
     consolidateObj,
     resolvePathAndGet,

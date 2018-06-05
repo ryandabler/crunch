@@ -1,10 +1,8 @@
 ////////////////////
 // Initialize
 ////////////////////
-const {
-    typeOf,
-    resolvePathAndGet
-} = require("./utilities");
+const { typeOf, types } = require("tupos");
+const { resolvePathAndGet } = require("./utilities");
 const constants = require("./constants");
 
 ////////////////////
@@ -26,14 +24,14 @@ const constants = require("./constants");
 const $sum = (group, param) => {
     let reducedValue = 0;
     group.forEach(item => {
-        if (typeOf(param) === constants.TYPE_NUMBER) {
+        if (typeOf(param) === types.NUMBER) {
             reducedValue += param;
-        } else if (typeOf(param) === constants.TYPE_ARRAY) {
+        } else if (typeOf(param) === types.ARRAY) {
             reducedValue += param.map(_path => resolvePathAndGet(item, _path))
                 .reduce((accum, val) => accum + val);
-        } else if (typeOf(param) === constants.TYPE_OBJECT) {
+        } else if (typeOf(param) === types.OBJECT) {
             reducedValue += aggregations[param.operation]([ item ], param.param);
-        } else if (typeOf(param) === constants.TYPE_STRING) {
+        } else if (typeOf(param) === types.STRING) {
             reducedValue += resolvePathAndGet(item, param);
         }
     });
@@ -57,14 +55,14 @@ const $sum = (group, param) => {
 const $multiply = (group, param) => {
     let reducedValue = 1;
     group.forEach(item => {
-        if (typeOf(param) === constants.TYPE_NUMBER) {
+        if (typeOf(param) === types.NUMBER) {
             reducedValue *= param;
-        } else if (typeOf(param) === constants.TYPE_ARRAY) {
+        } else if (typeOf(param) === types.ARRAY) {
             reducedValue *= param.map(_path => resolvePathAndGet(item, _path))
                 .reduce((accum, val) => accum * val);
-        } else if (typeOf(param) === constants.TYPE_OBJECT) {
+        } else if (typeOf(param) === types.OBJECT) {
             reducedValue *= aggregations[param.operation]([ item ], param.param);
-        } else if (typeOf(param) === constants.TYPE_STRING) {
+        } else if (typeOf(param) === types.STRING) {
             reducedValue += resolvePathAndGet(item, param);
         }
     });
@@ -89,18 +87,18 @@ const $avg = (group, param) => {
     let reducedValue = 0;
     let counter = 0;
     group.forEach(item => {
-        if (typeOf(param) === constants.TYPE_NUMBER) {
+        if (typeOf(param) === types.NUMBER) {
             reducedValue = param;
             counter++;
-        } else if (typeOf(param) === constants.TYPE_ARRAY) {
+        } else if (typeOf(param) === types.ARRAY) {
             reducedValue = param.map(_path => resolvePathAndGet(item, _path))
                 .reduce((accum, val) => accum + val);
             counter = param.length;
-        } else if (typeOf(param) === constants.TYPE_OBJECT) {
+        } else if (typeOf(param) === types.OBJECT) {
             reducedValue += aggregations[param.operation]([ item ], param.param);
             //TODO: is this right? Should we do counter++?
             counter = group.length;
-        } else if (typeOf(param) === constants.TYPE_STRING) {
+        } else if (typeOf(param) === types.STRING) {
             reducedValue += resolvePathAndGet(item, param);
             counter++;
         }
