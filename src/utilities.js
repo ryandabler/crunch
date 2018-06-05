@@ -44,7 +44,8 @@ const consolidateObj = (template, groupBy) => {
             retObj,
             resolvePathAndSet(
                 resolvePathAndGet(template, condition.path),
-                condition.name)
+                condition.name
+            )
         );
     });
 
